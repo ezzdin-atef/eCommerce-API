@@ -4,6 +4,7 @@ const { graphqlHTTP } = require("express-graphql");
 const schema = require("./schema/schema");
 const mongoose = require("mongoose");
 const app = express();
+var { buildSchema } = require("graphql");
 
 mongoose.connect(
   "mongodb+srv://ezzdin_dev:dev123456@cluster0.fyzf3.mongodb.net/ecommerce?retryWrites=true&w=majority",

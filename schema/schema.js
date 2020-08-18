@@ -21,7 +21,12 @@ const UserType = new GraphQLObjectType({
     lastName: { type: GraphQLString },
     email: { type: GraphQLString },
     password: { type: GraphQLString },
-    orders: { type: new GraphQLList(GraphQLString) },
+    orders: {
+      type: new GraphQLList(ProductType),
+      resolve(parent, args) {
+        return parent.orders.map((el) => Product.findById(el));
+      },
+    },
   }),
 });
 
@@ -32,7 +37,12 @@ const ProductType = new GraphQLObjectType({
     title: { type: GraphQLID },
     description: { type: GraphQLString },
     price: { type: GraphQLInt },
-    seller: { type: GraphQLID },
+    seller: {
+      type: UserType,
+      resolve(parent, args) {
+        return User.findById(parent.seller);
+      },
+    },
   }),
 });
 
@@ -54,13 +64,13 @@ const RootQuery = new GraphQLObjectType({
       },
     },
     users: {
-      type: UserType,
+      type: new GraphQLList(UserType),
       resolve(parent, args) {
         return User.find({});
       },
     },
     Products: {
-      type: ProductType,
+      type: new GraphQLList(ProductType),
       resolve(parent, args) {
         return Product.find({});
       },
@@ -114,7 +124,15 @@ const Mutation = new GraphQLObjectType({
         productID: { type: GraphQLID },
       },
       resolve(parent, args) {
-        return User.findById(args.id);
+        return new Promise((resolve, reject) => {
+          User.findOne({ _id: args.id }, function (err, res) {
+            if (err) reject(err);
+            else {
+              res.orders.push(args.productID);
+              resolve(res.save());
+            }
+          });
+        });
       },
     },
   },

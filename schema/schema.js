@@ -159,7 +159,7 @@ const Mutation = new GraphQLObjectType({
     addProduct: {
       type: UserType,
       args: {
-        title: { type: GraphQLID },
+        title: { type: GraphQLString },
         description: { type: GraphQLString },
         price: { type: GraphQLInt },
         seller: { type: GraphQLID },

@@ -75,6 +75,16 @@ const RootQuery = new GraphQLObjectType({
         return Product.find({});
       },
     },
+    login: {
+      type: UserType,
+      args: {
+        email: { type: GraphQLString },
+        password: { type: GraphQLString },
+      },
+      resolve(parent, args) {
+        return User.findOne({ email: args.email, password: args.password });
+      }
+    }
   },
 });
 

@@ -122,7 +122,7 @@ const Mutation = new GraphQLObjectType({
         });
         return new Promise((resolve, reject) => {
           user.save((err, res) => {
-            resolve(jwt.sign({ id: res.id }, process.env.JWT_SECRET_KEY));
+            resolve(jwt.sign({ ...res._doc }, process.env.JWT_SECRET_KEY));
           });
         })
 

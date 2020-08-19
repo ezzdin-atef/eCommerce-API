@@ -6,8 +6,11 @@ const mongoose = require("mongoose");
 const app = express();
 var { buildSchema } = require("graphql");
 
+require('dotenv').config();
+
+
 mongoose.connect(
-  "mongodb+srv://ezzdin_dev:dev123456@cluster0.fyzf3.mongodb.net/ecommerce?retryWrites=true&w=majority",
+  process.env.DB_URL,
   { useUnifiedTopology: true, useNewUrlParser: true }
 );
 mongoose.connection.once("open", () => {

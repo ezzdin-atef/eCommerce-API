@@ -1,7 +1,11 @@
 const graphql = require("graphql");
 const User = require("../models/user");
 const Product = require("../models/product");
+const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
 const _ = require("lodash");
+
+require('dotenv').config();
 
 const {
   GraphQLObjectType,
@@ -76,13 +80,22 @@ const RootQuery = new GraphQLObjectType({
       },
     },
     login: {
-      type: UserType,
+      type: GraphQLString,
       args: {
         email: { type: GraphQLString },
         password: { type: GraphQLString },
       },
-      resolve(parent, args) {
-        return User.findOne({ email: args.email, password: args.password });
+      async resolve(parent, args) {
+        const findUser = await User.findOne({ email: args.email });
+        if (!findUser) return "Not found";
+
+        return new Promise((resolve, reject) => {
+          bcrypt.compare(args.password, findUser.password, (err, res) => {
+            if (res) resolve(jwt.sign({...findUser._doc}, process.env.JWT_SECRET_KEY));
+            else resolve("Password is Wrong");
+          });
+        })
+
       }
     }
   },
@@ -92,21 +105,27 @@ const Mutation = new GraphQLObjectType({
   name: "Mutation",
   fields: {
     addUser: {
-      type: UserType,
+      type: GraphQLString,
       args: {
         firstName: { type: GraphQLString },
         lastName: { type: GraphQLString },
         email: { type: GraphQLString },
         password: { type: GraphQLString },
       },
-      resolve(parent, args) {
+      async resolve(parent, args) {
+        const hashPassowrd = bcrypt.hashSync(args.password, bcrypt.genSaltSync(10));
         let user = new User({
           firstName: args.firstName,
           lastName: args.lastName,
           email: args.email,
-          password: args.password,
+          password: hashPassowrd,
         });
-        return user.save();
+        return new Promise((resolve, reject) => {
+          user.save((err, res) => {
+            resolve(jwt.sign({ id: res.id }, process.env.JWT_SECRET_KEY));
+          });
+        })
+
       },
     },
     addProduct: {

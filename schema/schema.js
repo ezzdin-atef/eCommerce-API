@@ -125,7 +125,35 @@ const Mutation = new GraphQLObjectType({
             resolve(jwt.sign({ ...res._doc }, process.env.JWT_SECRET_KEY));
           });
         })
-
+      },
+    },
+    editUser: {
+      type: GraphQLString,
+      args: {
+        id: { type: GraphQLID },
+        firstName: { type: GraphQLString },
+        lastName: { type: GraphQLString },
+        email: { type: GraphQLString },
+        password: { type: GraphQLString },
+      },
+      resolve(parent, args) {
+        let hashPassowrd = null;
+        if (args.password) {
+          hashPassowrd = bcrypt.hashSync(args.password, bcrypt.genSaltSync(10));
+        }
+        return new Promise((resolve, reject) => {
+          User.findOne({ _id: args.id }, function (err, res) {
+            if (err) reject(err);
+            else {
+              res.firstName = args.firstName;
+              res.lastName = args.lastName;
+              res.email = args.email;
+              if (hashPassowrd) res.password = hashPassowrd;
+              res.save();
+              resolve(jwt.sign({ ...res._doc }, process.env.JWT_SECRET_KEY));
+            }
+          });
+        });
       },
     },
     addProduct: {

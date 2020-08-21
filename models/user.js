@@ -6,6 +6,10 @@ const userSchema = new Schema({
   lastName: String,
   email: String,
   password: String,
+  admin: {
+    type: Boolean,
+    default: false
+  },
   orders: Array,
 });
 

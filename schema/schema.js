@@ -15,6 +15,7 @@ const {
   GraphQLInt,
   GraphQLList,
   GraphQLNonNull,
+  GraphQLBoolean
 } = graphql;
 
 const UserType = new GraphQLObjectType({
@@ -25,6 +26,7 @@ const UserType = new GraphQLObjectType({
     lastName: { type: GraphQLString },
     email: { type: GraphQLString },
     password: { type: GraphQLString },
+    admin: { type: GraphQLBoolean },
     orders: {
       type: new GraphQLList(ProductType),
       resolve(parent, args) {
@@ -41,6 +43,7 @@ const ProductType = new GraphQLObjectType({
     title: { type: GraphQLID },
     description: { type: GraphQLString },
     price: { type: GraphQLInt },
+    photoUrl: { type: GraphQLString },
     seller: {
       type: UserType,
       resolve(parent, args) {
@@ -110,7 +113,7 @@ const Mutation = new GraphQLObjectType({
         firstName: { type: GraphQLString },
         lastName: { type: GraphQLString },
         email: { type: GraphQLString },
-        password: { type: GraphQLString },
+        password: { type: GraphQLString }
       },
       async resolve(parent, args) {
         const hashPassowrd = bcrypt.hashSync(args.password, bcrypt.genSaltSync(10));
@@ -162,6 +165,7 @@ const Mutation = new GraphQLObjectType({
         title: { type: GraphQLString },
         description: { type: GraphQLString },
         price: { type: GraphQLInt },
+        photoUrl: { type: GraphQLString },
         seller: { type: GraphQLID },
       },
       resolve(parent, args) {
@@ -169,6 +173,7 @@ const Mutation = new GraphQLObjectType({
           title: args.title,
           description: args.description,
           price: args.price,
+          photoUrl: args.photoUrl,
           seller: args.seller,
         });
         return product.save();

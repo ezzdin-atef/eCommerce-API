@@ -180,7 +180,7 @@ const Mutation = new GraphQLObjectType({
       },
     },
     buy: {
-      type: UserType,
+      type: GraphQLString,
       args: {
         id: { type: GraphQLID },
         productID: { type: GraphQLID },
@@ -191,7 +191,8 @@ const Mutation = new GraphQLObjectType({
             if (err) reject(err);
             else {
               res.orders.push(args.productID);
-              resolve(res.save());
+              res.save();
+              resolve(jwt.sign({ ...res._doc }, process.env.JWT_SECRET_KEY));
             }
           });
         });

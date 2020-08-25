@@ -7,7 +7,6 @@ const cors = require("cors");
 const app = express();
 const bodyParser = require("body-parser");
 var { buildSchema } = require("graphql");
-import { isSameSiteNoneCompatible } from 'should-send-same-site-none';
 
 
 require('dotenv').config();

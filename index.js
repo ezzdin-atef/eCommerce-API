@@ -59,7 +59,7 @@ app.post("/create-checkout-session", async (req, res) => {
       },
     ],
     mode: "payment",
-    success_url: "http://localhost:3000/success/" + req.body.id,
+    success_url: "https://ecommerce-react-123.netlify.app/success/" + req.body.id,
     cancel_url: "https://ecommerce-react-123.netlify.app",
   });
   res.json({ id: session.id });

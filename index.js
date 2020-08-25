@@ -20,7 +20,12 @@ mongoose.connection.once("open", () => {
   console.log("Connect to database");
 });
 
-app.use(cors());
+const corsOptions = {
+  origin: 'https://ecommerce-react-123.netlify.app',
+  optionsSuccessStatus: 200 // some legacy browsers (IE11, various SmartTVs) choke on 204
+}
+
+app.use(corscorsOptions));
 app.use(bodyParser.json());
 
 

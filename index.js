@@ -7,6 +7,7 @@ const cors = require("cors");
 const app = express();
 const bodyParser = require("body-parser");
 var { buildSchema } = require("graphql");
+import { isSameSiteNoneCompatible } from 'should-send-same-site-none';
 
 
 require('dotenv').config();
@@ -57,7 +58,6 @@ app.post("/create-checkout-session", async (req, res) => {
         },
         quantity: 1,
         description: req.body.description,
-
       },
     ],
     mode: "payment",

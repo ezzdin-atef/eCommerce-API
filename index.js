@@ -63,6 +63,7 @@ app.post("/create-checkout-session", async (req, res) => {
     success_url: "https://ecommerce-react-123.netlify.app/success/" + req.body.id,
     cancel_url: "https://ecommerce-react-123.netlify.app",
   });
+  console.log(session);
   res.json({ id: session.id });
 });
 
